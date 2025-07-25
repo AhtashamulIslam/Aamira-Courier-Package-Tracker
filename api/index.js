@@ -62,6 +62,9 @@ agenda.define("update status", async (job) => {
     const minutesBetween = getMinutesDifference(startTime, endTime);
     if (minutesBetween > 0) {
       const updatePackageStatus = async () => {
+        if(minutesBetween <= 30){
+          return;
+        }
         if((minutesBetween > 30) && (minutesBetween < 721)){
         if (packageOrder.status === "CREATED") {
           await Package.findByIdAndUpdate(packageOrder._id, {
@@ -106,7 +109,7 @@ agenda.define("update status", async (job) => {
 });
 (async function () {
   await agenda.start();
-  await agenda.every("35 minutes", "update status");
+  await agenda.every("32 minutes", "update status");
 })();
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
