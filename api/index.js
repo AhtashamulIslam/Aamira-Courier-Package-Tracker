@@ -10,7 +10,7 @@ import Agenda from "agenda";
 import Package from "./models/package.model.js";
 import path from 'path'
 
-dotenv.config({ override: true });
+dotenv.config();
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -86,7 +86,7 @@ agenda.define("update status", async (job) => {
         }
         
         else {
-           if(minutesBetween >1440 && (packageOrder.status !== "DELIVERED" || packageOrder.status === "EXCEPTION")){
+           if((minutesBetween >1440) && (packageOrder.status !== "DELIVERED")){
             await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "CANCELLED" }
           });
