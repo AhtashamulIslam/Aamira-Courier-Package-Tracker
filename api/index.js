@@ -10,7 +10,7 @@ import Agenda from "agenda";
 import Package from "./models/package.model.js";
 import path from 'path'
 
-dotenv.config();
+dotenv.config({ override: true });
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -60,7 +60,7 @@ agenda.define("update status", async (job) => {
     const endTime = new Date(new Date().toISOString());
 
     const minutesBetween = getMinutesDifference(startTime, endTime);
-    if (minutesBetween > 30 && minutesBetween < 1440) {
+    if ((minutesBetween > 30) && (minutesBetween < 1440)) {
       const updatePackageStatus = async () => {
         if (packageOrder.status === "CREATED" || "EXCEPTION") {
           await Package.findByIdAndUpdate(packageOrder._id, {
@@ -78,7 +78,8 @@ agenda.define("update status", async (job) => {
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "DELIVERED" }
           });
-        }else if(minutesBetween > 220 && minutesBetween < 1400 && packageOrder.status !== "EXCEPTION"){
+        }else if(minutesBetween > 220  && 
+                (packageOrder.status !== "EXCEPTION" && packageOrder.status !== "DELIVERED")){
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "EXCEPTION" }
           });
