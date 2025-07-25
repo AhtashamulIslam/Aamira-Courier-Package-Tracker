@@ -60,41 +60,48 @@ agenda.define("update status", async (job) => {
     const endTime = new Date(new Date().toISOString());
 
     const minutesBetween = getMinutesDifference(startTime, endTime);
-    if ((minutesBetween > 30) && (minutesBetween < 1440)) {
+    if (minutesBetween > 0) {
       const updatePackageStatus = async () => {
-        if (packageOrder.status === "CREATED" || "EXCEPTION") {
+        if(minutesBetween < 721){
+        if (packageOrder.status === "CREATED") {
           await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "PICKED_UP" }
           });
-        }else if(packageOrder.status === "PICKED_UP"|| "EXCEPTION"){
+        }else if(packageOrder.status === "PICKED_UP"){
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "IN_TRANSIT" }
           });
-        }else if(packageOrder.status === "IN_TRANSIT" || "EXCEPTION"){
+        }else if(packageOrder.status === "IN_TRANSIT"){
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "OUT_FOR_DELIVERY" }
           });
-        }else if(packageOrder.status === "OUT_FOR_DELIVERY" || "EXCEPTION") {
+        }else if(packageOrder.status === "OUT_FOR_DELIVERY") {
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "DELIVERED" }
           });
-        }else if(minutesBetween > 220  && 
-                (packageOrder.status !== "EXCEPTION" && packageOrder.status !== "DELIVERED")){
-             await Package.findByIdAndUpdate(packageOrder._id, {
-            $set: { status: "EXCEPTION" }
-          });
         }
-        
-        else {
-           if((minutesBetween >1440) && (packageOrder.status !== "DELIVERED")){
-            await Package.findByIdAndUpdate(packageOrder._id, {
-            $set: { status: "CANCELLED" }
-          });
+      }else{
+        if((minutesBetween >= 721 ) && (minutesBetween <= 1440) && (packageOrder.status !== "DELIVERED")){
+             if(packageOrder.status !== "EXCEPTION"){
+               await Package.findByIdAndUpdate(packageOrder._id, {
+               $set: { status: "EXCEPTION" }
+              });
+             
+             }else{
+               await Package.findByIdAndUpdate(packageOrder._id, {
+               $set: { status: "DELIVERED" }
+              });
              }
+           }else{
+               await Package.findByIdAndUpdate(packageOrder._id, {
+               $set: { status: "CANCELED" }
+              });
+           }
+
         }
-      };
-      updatePackageStatus();
-    }
+     }
+     updatePackageStatus();
+  }
   });
 });
 (async function () {
