@@ -28,8 +28,10 @@ function App() {
           <Route path="tracking-status" element={<TrackingStatus />} />
           </Route>
         </Route>
-        <Route path="/track/:packageId" element={<TrackOrder />} />
-      </Routes>
+        <Route element={<OnlyAdminPrivateRoute />}>
+         <Route path="/track/:packageId" element={<TrackOrder />} />
+        </Route>
+        </Routes>
       <Footer />
     </BrowserRouter>
   );

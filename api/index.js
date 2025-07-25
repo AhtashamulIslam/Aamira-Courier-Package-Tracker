@@ -52,26 +52,32 @@ agenda.define("update status", async (job) => {
     const endTime = new Date(new Date().toISOString());
 
     const minutesBetween = getMinutesDifference(startTime, endTime);
-    if (minutesBetween > 30) {
+    if (minutesBetween > 30 && minutesBetween < 1440) {
       const updatePackageStatus = async () => {
-        if (packageOrder.status === "CREATED") {
+        if (packageOrder.status === "CREATED" || "EXCEPTION") {
           await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "PICKED_UP" }
           });
-        }else if(packageOrder.status === "PICKED_UP"){
+        }else if(packageOrder.status === "PICKED_UP"|| "EXCEPTION"){
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "IN_TRANSIT" }
           });
-        }else if(packageOrder.status === "IN_TRANSIT"){
+        }else if(packageOrder.status === "IN_TRANSIT" || "EXCEPTION"){
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "OUT_FOR_DELIVERY" }
           });
-        }else if(packageOrder.status === "OUT_FOR_DELIVERY") {
+        }else if(packageOrder.status === "OUT_FOR_DELIVERY" || "EXCEPTION") {
              await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "DELIVERED" }
           });
-        }else {
-           if(minutesBetween >1440 && packageOrder.status !== "DELIVERED"){
+        }else if(minutesBetween > 220 && minutesBetween < 1400 && packageOrder.status !== "EXCEPTION"){
+             await Package.findByIdAndUpdate(packageOrder._id, {
+            $set: { status: "EXCEPTION" }
+          });
+        }
+        
+        else {
+           if(minutesBetween >1440 && (packageOrder.status !== "DELIVERED" || packageOrder.status === "EXCEPTION")){
             await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "CANCELLED" }
           });
