@@ -109,7 +109,7 @@ agenda.define("update status", async (job) => {
 });
 (async function () {
   await agenda.start();
-  await agenda.every("32 minutes", "update status");
+  await agenda.every("15 minutes", "update status");
 })();
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

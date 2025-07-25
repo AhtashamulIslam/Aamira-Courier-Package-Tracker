@@ -115,6 +115,11 @@ const TrackingStatus = () => {
                       cancelled
                     </span>
                   )}
+                   {item.status === "EXCEPTION" && (
+                    <span className="bg-black px-1 rounded-md text-white">
+                      cancelled
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}

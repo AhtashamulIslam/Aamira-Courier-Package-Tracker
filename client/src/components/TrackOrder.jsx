@@ -151,7 +151,7 @@ const TrackOrder = () => {
                   </div>
                 </div>
               </div>
-              <div>
+              <div className="flex-1/2">
                 <h2 className="font-semibold text-lg mb-1">
                   Products Details:
                 </h2>
