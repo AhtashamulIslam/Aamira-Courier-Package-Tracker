@@ -41,7 +41,7 @@ function SignUp() {
     }
   };
   return (
-    <div className="flex flex-col px-8 sm:px-12 mt-10 max-w-5xl mx-auto min-h-[66vh]
+    <div className="flex flex-col px-8 sm:px-12 mt-10 max-w-5xl mx-auto min-h-screen
     md:flex-row md:p-3 md:items-center gap-10">
       <div className="flex-1">
         <Link to="/" className="text-6xl dark:text-white font-bold">
