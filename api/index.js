@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import connectCloudinary from "./configs/cloudinary.js";
 import Agenda from "agenda";
 import Package from "./models/package.model.js";
-import cors from "cors";
+import path from 'path'
 
 dotenv.config();
 
@@ -22,6 +22,8 @@ mongoose
   });
 
 connectCloudinary();
+
+ const __dirname = path.resolve();
 
 const app = express();
 
@@ -37,6 +39,12 @@ app.listen(PORT, () => {
 app.use("/api/aamira", trackingRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+})
 
 const agenda = new Agenda({ db: { address: process.env.MONGODB_URI } });
 agenda.define("update status", async (job) => {
