@@ -62,7 +62,7 @@ agenda.define("update status", async (job) => {
     const minutesBetween = getMinutesDifference(startTime, endTime);
     if (minutesBetween > 0) {
       const updatePackageStatus = async () => {
-        if(minutesBetween < 721){
+        if((minutesBetween > 30) && (minutesBetween < 721)){
         if (packageOrder.status === "CREATED") {
           await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "PICKED_UP" }
