@@ -40,6 +40,7 @@ const packageSchema= new mongoose.Schema({
     },
     prevStatus:{
         type:String,
+        default:""
     }
 },
     
