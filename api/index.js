@@ -62,10 +62,10 @@ agenda.define("update status", async (job) => {
     const minutesBetween = getMinutesDifference(startTime, endTime);
     if (minutesBetween > 0) {
       const updatePackageStatus = async () => {
-        if(minutesBetween <= 30){
+        if(minutesBetween <= 10){
           return;
         }
-        if((minutesBetween > 30) && (minutesBetween < 721)){
+        if((minutesBetween > 10) && (minutesBetween < 721)){
         if (packageOrder.status === "CREATED") {
           await Package.findByIdAndUpdate(packageOrder._id, {
             $set: { status: "PICKED_UP" }
@@ -109,7 +109,7 @@ agenda.define("update status", async (job) => {
 });
 (async function () {
   await agenda.start();
-  await agenda.every("15 minutes", "update status");
+  await agenda.every("5 minutes", "update status");
 })();
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

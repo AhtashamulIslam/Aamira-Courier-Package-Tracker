@@ -61,7 +61,7 @@ const TrackOrder = () => {
               key={order.packageId}
               className="flex gap-7 flex-col sm:flex-row p-5 justify-start mt-3 border-2 border-slate-500"
             >
-              <div className="w-full">
+              <div className="flex-1">
                 <h2 className="font-semibold text-lg ml-1.5 mb-1">
                   Tracking Status:
                 </h2>
@@ -151,7 +151,7 @@ const TrackOrder = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex-1/2">
+              <div className="flex-1">
                 <h2 className="font-semibold text-lg mb-1">
                   Products Details:
                 </h2>
