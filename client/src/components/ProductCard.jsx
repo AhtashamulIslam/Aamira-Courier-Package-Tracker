@@ -7,7 +7,7 @@ const ProductCard = ({product}) => {
     items-center mb-5'>
         <img src={product.productImage[0][0]} alt="Product_image" width="80px"/>
             <div>
-                <h2 className='text-lg font-semibold max-sm:text-center'>{product.productDesc}</h2>
+                <h2 className='text-lg font-semibold max-sm:text-center uppercase'>{product.productDesc}</h2>
                 <h2 className='text-sm font-semibold max-sm:text-center'>Sponsored By Aamira</h2>
             </div>
             <p className='text-gray-500'>{product.price} TK</p>
