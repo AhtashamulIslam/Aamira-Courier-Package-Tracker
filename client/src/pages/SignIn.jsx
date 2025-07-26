@@ -1,14 +1,16 @@
 import {Link,useNavigate} from 'react-router-dom'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInSuccess,signInStart,signInFailure } from '../redux/user/userSlice';
+import toast from 'react-hot-toast';
 
 function SignIn() {
   
   const [formData, setFormData] = useState({});
-  const {loading,error} = useSelector(state=>state.user)
+  const [loading,setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate()
+
   
   const handleChange = (e) => {
     setFormData({
@@ -20,6 +22,7 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(signInStart())
+    setLoading(true)
     try {
       const res = await fetch("/api/auth/signin", {
         method: "POST",
@@ -31,14 +34,19 @@ function SignIn() {
       const data = await res.json();
       if (data.success === false) {
         dispatch(signInFailure(data.message));
+        toast.error('Failed to signed in')
         return;
       }
       if(res.ok){
-        dispatch(signInSuccess(data))
+        dispatch(signInSuccess(data));
+        toast.success("Signed in successfully");
         navigate('/')
       }
     } catch (error) {
      dispatch(signInFailure(error.message))
+     toast.error(error.message)
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -77,11 +85,12 @@ function SignIn() {
             onChange={handleChange}
           />
           <button
-           
+            disabled={loading}
             className="cursor-pointer p-3 rounded-lg bg-slate-700
                        text-white hover:opacity-90 uppercase disabled:opacity-80"
           >
-            sign in
+            { loading ? 'Loading' : ' sign in'}
+           
           </button>
         </form>
         <div className="flex gap-2 mt-4 justify-center">
@@ -90,7 +99,6 @@ function SignIn() {
             <span className="text-blue-700">Sign up</span>
           </Link>
         </div>
-         {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
       </div>
        
     </div>

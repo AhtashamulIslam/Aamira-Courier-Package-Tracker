@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate()
@@ -27,15 +27,15 @@ function SignUp() {
       });
       const data = await res.json();
       if (data.success === false) {
-        setError(data.message);
+        toast.error("Failed to sign up");
         return;
       }
       if(res.ok){
-        setError(null)
+        toast.success("Signed up successfully");
         navigate('/sign-in')
       }
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -81,11 +81,12 @@ function SignUp() {
             onChange={handleChange}
           />
           <button
-            
+            disabled={loading}
             className="cursor-pointer p-3 rounded-lg bg-slate-700
                        text-white hover:opacity-90 uppercase disabled:opacity-80"
           >
-            sign up
+            { loading ? 'Loading' : 'sign up'}
+            
           </button>
         </form>
         <div className="flex gap-2 mt-4 justify-center">
@@ -94,7 +95,6 @@ function SignUp() {
             <span className="text-blue-700">Sign in</span>
           </Link>
         </div>
-         {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
       </div>
        
     </div>
