@@ -81,11 +81,11 @@ function SignUp() {
             onChange={handleChange}
           />
           <button
-            disabled={loading}
+  
             className="cursor-pointer p-3 rounded-lg bg-slate-700
                        text-white hover:opacity-90 uppercase disabled:opacity-80"
           >
-            {loading ? "Loading..." : "sign up"}
+            Sign Up
           </button>
         </form>
         <div className="flex gap-2 mt-4 justify-center">
