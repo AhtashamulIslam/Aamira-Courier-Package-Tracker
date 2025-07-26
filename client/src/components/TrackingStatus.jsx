@@ -72,7 +72,7 @@ const TrackingStatus = () => {
                     width="80px"
                   />
                 </td>
-                <td className="py-3 px-4 text-gray-700 border-t font-medium border-gray-300 max-sm:hidden">
+                <td className="py-3 px-4 text-gray-700 border-t font-medium uppercase border-gray-300 max-sm:hidden">
                   {item.productDesc}
                 </td>
                 <td className="py-3 px-4 text-gray-700 border-t font-medium border-gray-300 max-sm:hidden">
@@ -117,7 +117,7 @@ const TrackingStatus = () => {
                   )}
                    {item.status === "EXCEPTION" && (
                     <span className="bg-black px-1 rounded-md text-white">
-                      cancelled
+                      exception
                     </span>
                   )}
                 </td>
