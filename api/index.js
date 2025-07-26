@@ -95,7 +95,7 @@ agenda.define("update status", async (job) => {
                $set: { status: "DELIVERED" }
               });
              }
-           }else if(minutesBetween > 1440){
+           }else if( (minutesBetween > 1440) && (packageOrder.status !== "DELIVERED") ){
                await Package.findByIdAndUpdate(packageOrder._id, {
                $set: { status: "CANCELLED" }
               });
