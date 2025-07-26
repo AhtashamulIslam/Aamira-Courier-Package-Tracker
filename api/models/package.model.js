@@ -37,6 +37,9 @@ const packageSchema= new mongoose.Schema({
         type:String,
         enum:["CREATED","PICKED_UP","IN_TRANSIT","OUT_FOR_DELIVERY","DELIVERED","EXCEPTION","CANCELLED"],
         default:"CREATED"
+    },
+    prevStatus:{
+        type:String,
     }
 },
     

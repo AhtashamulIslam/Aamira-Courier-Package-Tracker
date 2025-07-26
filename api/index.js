@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import connectCloudinary from "./configs/cloudinary.js";
 import Agenda from "agenda";
 import Package from "./models/package.model.js";
-import path from 'path'
+import path from "path";
 
 dotenv.config();
 
@@ -23,7 +23,7 @@ mongoose
 
 connectCloudinary();
 
- const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 const app = express();
 
@@ -40,11 +40,11 @@ app.use("/api/aamira", trackingRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
 
-app.use(express.static(path.join(__dirname, '/client/dist')));
+app.use(express.static(path.join(__dirname, "/client/dist")));
 
-app.get('/{*any}', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-})
+app.get("/{*any}", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 const agenda = new Agenda({ db: { address: process.env.MONGODB_URI } });
 agenda.define("update status", async (job) => {
@@ -62,54 +62,76 @@ agenda.define("update status", async (job) => {
     const minutesBetween = getMinutesDifference(startTime, endTime);
     if (minutesBetween > 0) {
       const updatePackageStatus = async () => {
-        if(minutesBetween <= 10){
+        if (minutesBetween <= 5) {
           return;
         }
-        if((minutesBetween > 10) && (minutesBetween < 721)){
-        if (packageOrder.status === "CREATED") {
-          await Package.findByIdAndUpdate(packageOrder._id, {
-            $set: { status: "PICKED_UP" }
-          });
-        }else if(packageOrder.status === "PICKED_UP"){
-             await Package.findByIdAndUpdate(packageOrder._id, {
-            $set: { status: "IN_TRANSIT" }
-          });
-        }else if(packageOrder.status === "IN_TRANSIT"){
-             await Package.findByIdAndUpdate(packageOrder._id, {
-            $set: { status: "OUT_FOR_DELIVERY" }
-          });
-        }else if(packageOrder.status === "OUT_FOR_DELIVERY") {
-             await Package.findByIdAndUpdate(packageOrder._id, {
-            $set: { status: "DELIVERED" }
-          });
+        if (minutesBetween > 5 && minutesBetween < 31) {
+          if (packageOrder.status === "CREATED") {
+            await Package.findByIdAndUpdate(packageOrder._id, {
+              $set: { status: "PICKED_UP" }
+            });
+          } else if (packageOrder.status === "PICKED_UP") {
+            await Package.findByIdAndUpdate(packageOrder._id, {
+              $set: { status: "IN_TRANSIT" }
+            });
+          } else if (packageOrder.status === "IN_TRANSIT") {
+            await Package.findByIdAndUpdate(packageOrder._id, {
+              $set: { status: "OUT_FOR_DELIVERY" }
+            });
+          } else if (packageOrder.status === "OUT_FOR_DELIVERY") {
+            await Package.findByIdAndUpdate(packageOrder._id, {
+              $set: { status: "DELIVERED" }
+            });
+          }
+        } else {
+          if (
+            minutesBetween >= 31 &&
+            minutesBetween <= 720 &&
+            packageOrder.status !== "DELIVERED"
+          ) {
+            if (packageOrder.status !== "EXCEPTION") {
+              await Package.findByIdAndUpdate(packageOrder._id, {
+                $set: { status: "EXCEPTION", prevStatus: packageOrder.status }
+              });
+            } else {
+              if (packageOrder.prevStatus === "CREATED") {
+                await Package.findByIdAndUpdate(packageOrder._id, {
+                  $set: { status: "PICKED_UP", prevStatus: "PICKED_UP" }
+                });
+              } else if (packageOrder.prevStatus === "PICKED_UP") {
+                await Package.findByIdAndUpdate(packageOrder._id, {
+                  $set: { status: "IN_TRANSIT", prevStatus: "IN_TRANSIT" }
+                });
+              } else if (packageOrder.prevStatus === "IN_TRANSIT") {
+                await Package.findByIdAndUpdate(packageOrder._id, {
+                  $set: {
+                    status: "OUT_FOR_DELIVERY",
+                    prevStatus: "OUT_FOR_DELIVERY"
+                  }
+                });
+              } else if (packageOrder.prevStatus === "OUT_FOR_DELIVERY") {
+                await Package.findByIdAndUpdate(packageOrder._id, {
+                  $set: { status: "DELIVERED", prevStatus:"" }
+                });
+              }
+            }
+          } else if (
+            minutesBetween > 720 &&
+            packageOrder.status !== "DELIVERED"
+          ) {
+            await Package.findByIdAndUpdate(packageOrder._id, {
+              $set: { status: "CANCELLED" }
+            });
+          }
         }
-      }else{
-        if((minutesBetween >= 721 ) && (minutesBetween <= 1440) && (packageOrder.status !== "DELIVERED")){
-             if(packageOrder.status !== "EXCEPTION"){
-               await Package.findByIdAndUpdate(packageOrder._id, {
-               $set: { status: "EXCEPTION" }
-              });
-             
-             }else{
-               await Package.findByIdAndUpdate(packageOrder._id, {
-               $set: { status: "DELIVERED" }
-              });
-             }
-           }else if( (minutesBetween > 1440) && (packageOrder.status !== "DELIVERED") ){
-               await Package.findByIdAndUpdate(packageOrder._id, {
-               $set: { status: "CANCELLED" }
-              });
-           }
-
-        }
-     }
-     updatePackageStatus();
-  }
+      };
+      updatePackageStatus();
+    }
   });
 });
 (async function () {
   await agenda.start();
-  await agenda.every("5 minutes", "update status");
+  await agenda.every("4 minutes", "update status");
 })();
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
