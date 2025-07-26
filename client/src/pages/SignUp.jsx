@@ -41,14 +41,14 @@ function SignUp() {
     }
   };
   return (
-    <div className="flex flex-col px-8 sm:px-12 mt-10 max-w-5xl mx-auto min-h-screen
+    <div className="flex flex-col px-8 sm:px-12 mt-10 max-w-5xl mx-auto min-h-[80vh]
     md:flex-row md:p-3 md:items-center gap-10">
       <div className="flex-1">
         <Link to="/" className="text-6xl dark:text-white font-bold">
           <span className="rounded-lg text-slate-500 dark:text-white">
-            Real
+            Aamira
           </span>
-          <span className="text-slate-700">Estate</span>
+          <span className="text-slate-700">Tracking</span>
         </Link>
         <p className="text-sm mt-5 text-slate-600">
           This is a personal project. You can sign up with your email and

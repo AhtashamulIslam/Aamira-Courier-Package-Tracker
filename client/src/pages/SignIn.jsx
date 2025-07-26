@@ -43,7 +43,7 @@ function SignIn() {
   };
 
   return (
-    <div className="flex flex-col px-8 sm:px-12 max-w-5xl min-h-screen mx-auto md:flex-row 
+    <div className="flex flex-col px-8 sm:px-12 max-w-5xl min-h-[80vh] mx-auto md:flex-row 
     md:p-3 md:items-center gap-10">
       <div className="flex-1">
         <Link to="/" className="text-6xl font-bold">
